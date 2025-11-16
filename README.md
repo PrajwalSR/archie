@@ -2,196 +2,350 @@
 
 Transform your product idea into a professional system architecture blueprint in seconds.
 
-## What is Archie?
-
-Archie is an AI-powered system architect that helps non-technical founders and student builders turn their ideas into actionable technical blueprints. No more guessing about tech stacks, scalability, or compliance requirements.
-
-### The Problem We Solve
-
-- **Non-technical founders** don't know where to start with system design
-- **Student builders** can code but don't know how to deploy or scale
-- **Solo entrepreneurs** waste weeks researching the "right" tech stack
-- **Everyone** misses critical compliance requirements (HIPAA, PCI-DSS, etc.)
-
-### What Archie Delivers
-
-1. **Visual System Architecture Diagram** - See your entire system at a glance
-2. **Customized Tech Stack** - Get specific recommendations with justifications
-3. **Compliance Guidance** - Never miss HIPAA, PCI, or GDPR requirements
-4. **Scalability Strategy** - Understand how to handle 100 vs 100,000 users
-5. **Concrete First Steps** - Know exactly what to build first
-6. **Cost Estimates** - Realistic monthly budgets for Year 1
-7. **Risk Assessment** - Critical gotchas to avoid
-
-## Quick Start
-
-### Prerequisites
-
-- Node.js 16+ installed
-- Anthropic API key ([get one here](https://console.anthropic.com/))
-
-### Installation
-
-```bash
-# 1. Install dependencies
-npm install
-
-# 2. Set up your environment
-cp .env.example .env
-
-# 3. Add your Anthropic API key to .env
-# Edit .env and replace 'your_api_key_here' with your actual key
-```
-
-### Running the App
-
-```bash
-# Start the server
-npm start
-
-# For development with auto-reload
-npm run dev
-```
-
-Then open your browser to: `http://localhost:3000`
-
-## How It Works
-
-### For Users
-
-1. **Describe your idea** - "An app for doctors to share patient MRI scans"
-2. **Answer key questions** - Scale, compliance, skill level, timeline
-3. **Get your blueprint** - Complete architecture in 10-20 seconds
-
-### Under the Hood
-
-```
-User Input (Form)
-  → Express Server
-  → Claude API (Hackathon Mega-Prompt)
-  → Structured JSON Response
-  → Frontend Renders Results + Mermaid Diagram
-```
-
-## Architecture (MVP)
-
-This is the **Hackathon MVP** version with simplified architecture:
-
-- **Frontend**: Vanilla HTML/CSS/JavaScript
-- **Backend**: Node.js + Express
-- **AI**: Claude Sonnet 4.0 via Anthropic API
-- **Visualization**: Mermaid.js for diagrams
-- **State**: No database (stateless, single-session)
-
-## Example Use Cases
-
-### Use Case 1: Healthcare Startup
-**Input**: "HIPAA-compliant telemedicine platform"
-**Output**: Architecture with encrypted databases, HIPAA-specific hosting (AWS with BAA), secure video streaming, audit logging
-
-### Use Case 2: Student Hackathon
-**Input**: "Social app for college students to share class notes"
-**Output**: Lightweight stack (Firebase, React), simple auth, 1-week build plan
-
-### Use Case 3: Payment Platform
-**Input**: "Marketplace with credit card payments"
-**Output**: PCI-DSS guidance, recommendation to use Stripe, compliance checklist
-
-## Project Structure
-
-```
-archie/
-├── server.js              # Express server + Claude API integration
-├── package.json           # Dependencies
-├── .env.example           # Environment template
-├── public/
-│   ├── index.html         # Main UI
-│   ├── app.js             # Frontend logic
-│   └── styles.css         # Styling
-└── README.md              # You are here
-```
-
-## Key Features
-
-### 1. Smart Compliance Detection
-Archie automatically detects compliance triggers:
-- **Healthcare/Medical/HIPAA** → Enforces HIPAA requirements
-- **Payment/Credit Card** → Enforces PCI-DSS
-- **Education** → Suggests FERPA considerations
-- **EU Users** → Reminds about GDPR
-
-### 2. Skill-Level Adaptation
-Recommendations change based on your skill:
-- **Non-technical**: Suggests no-code tools (Bubble, Webflow)
-- **Intermediate**: Guides to beginner-friendly platforms (Firebase, Vercel)
-- **Advanced**: Recommends enterprise solutions (Kubernetes, microservices)
-
-### 3. Visual System Diagrams
-Every architecture includes a Mermaid.js diagram showing:
-- User/Client layer
-- Frontend (Web/Mobile)
-- Backend/API
-- Database
-- External services (Auth, Payments, etc.)
-- Data flow arrows
-
-## Future Roadmap
-
-### Phase 2: Conversational AI (Post-Hackathon)
-- Replace form with chat interface
-- Multi-turn conversation with state management
-- Ask clarifying questions dynamically
-
-### Phase 3: Interactive Diagrams
-- Click any component to learn more
-- Edit the diagram in real-time
-- Export to PDF or share via link
-
-### Phase 4: Code Generation
-- Generate starter code for the recommended stack
-- Create database schemas
-- Generate API endpoint stubs
-
-## Technical Decisions
-
-### Why Claude API?
-- Best-in-class reasoning for complex system design
-- Excellent at structured JSON output
-- Long context window for detailed responses
-
-### Why Mermaid.js?
-- Text-based diagram syntax (easy for AI to generate)
-- Renders beautiful diagrams in-browser
-- No external dependencies
-
-### Why No Database for MVP?
-- Hackathon time constraint
-- Stateless design is simpler to demo
-- Can add persistence later (user accounts, saved blueprints)
-
-## Contributing
-
-Ideas for improvements:
-1. Add more compliance frameworks (SOC 2, ISO 27001)
-2. Support for mobile app architectures
-3. Integration with cloud provider CLIs for one-click setup
-4. Multi-language support
-5. Export to Terraform/CloudFormation
-
-## License
-
-MIT License - Build whatever you want with this!
-
-## Credits
-
-Built with:
-- [Claude AI](https://www.anthropic.com/claude) by Anthropic
-- [Mermaid.js](https://mermaid.js.org/) for diagrams
-- [Express.js](https://expressjs.com/) for the server
-- Caffeine and hackathon energy
+**No technical knowledge required.** Just describe your idea, and Archie designs the complete system for you.
 
 ---
 
-**Made for builders, by builders** 🚀
+## ⚡ Quick Start
 
-Questions? Found a bug? Open an issue or submit a PR!
+```bash
+npm install        # Install dependencies
+./setup.sh         # Interactive setup (adds your API keys)
+npm start          # Start Archie
+```
+
+Open http://localhost:3000 and describe your product idea!
+
+---
+
+## 🎯 What Archie Does
+
+Archie is an AI-powered system architect that generates **comprehensive, production-ready architecture blueprints** for your product ideas.
+
+### You Get:
+
+✅ **Complete System Diagram** - Visual architecture with all components
+✅ **Tech Stack Recommendations** - Frontend, backend, database, hosting (with justifications)
+✅ **Database Design** - Schema, tables, relationships, indexing strategy
+✅ **API Endpoints** - 5-10 key endpoints for your system
+✅ **Cloud Infrastructure** - Specific AWS/GCP/Azure services
+✅ **Authentication System** - Auth provider, features, implementation
+✅ **Security Architecture** - Encryption, secrets management, DDoS protection
+✅ **Compliance Guidance** - HIPAA, PCI-DSS, GDPR, SOC 2 (automatically detected)
+✅ **Deployment Strategy** - CI/CD, environments, rollback plans
+✅ **Scalability Plan** - How to handle 10x growth
+✅ **Cost Estimates** - Monthly costs (initial + Year 1)
+✅ **First Steps** - Concrete action plan to start building
+✅ **Risks & Gotchas** - What to watch out for
+
+---
+
+## 🚀 Example
+
+**Input:**
+```
+Idea: An app for doctors to securely share patient MRI scans
+
+Users: 1,000-10,000
+Compliance: Healthcare (HIPAA Required)
+Skill Level: Non-technical
+Timeline: 3-6 months
+```
+
+**Output in 20 seconds:**
+- 🎯 Complete HIPAA-compliant architecture
+- 🏥 AWS with HIPAA-eligible services (RDS, S3 with encryption)
+- 🔒 Security measures (encryption, audit logging, BAA requirements)
+- 📊 Database schema for users, scans, sharing permissions
+- 🔗 API endpoints for upload, share, view scans
+- 💰 Cost estimate: $200-500/month
+- ⚡ Scalability: CDN for MRI files, database replication
+- ✅ 7-step action plan to start building
+
+---
+
+## 🤖 AI Providers (Smart Selection)
+
+Archie supports **OpenAI** and **Claude** with automatic quality comparison.
+
+### Current: OpenAI Only
+```bash
+# Add to .env
+OPENAI_API_KEY=sk-your-key-here
+```
+- Uses GPT-4 Turbo (best OpenAI model)
+- Fast, comprehensive architectures
+- Perfect for getting started
+
+### Future: Parallel Comparison Mode (When you add Claude)
+```bash
+# Add both to .env
+OPENAI_API_KEY=sk-your-key
+ANTHROPIC_API_KEY=sk-ant-your-key
+```
+- Calls **both** OpenAI and Claude simultaneously
+- Compares quality using scoring algorithm
+- **Returns the best result automatically**
+- No code changes needed - just add the key!
+
+**Why?** Claude excels at compliance (HIPAA, PCI-DSS) and security depth. OpenAI is faster. Parallel mode gives you the best of both.
+
+---
+
+## 📋 Who Is This For?
+
+### 1. Non-Technical Founders
+- You have a brilliant idea but don't know where to start
+- You need a blueprint to hire developers against
+- You want to understand the "technical side" before pitching investors
+
+### 2. Student Builders
+- You can code but don't know deployment/scaling
+- Your projects are "stuck on your laptop"
+- You need to learn system design for interviews/hackathons
+
+### 3. Technical Founders
+- You want a second opinion on your architecture
+- You need to evaluate different approaches quickly
+- You're exploring compliance requirements (HIPAA, PCI, SOC 2)
+
+---
+
+## 🛠️ Installation
+
+### Prerequisites
+- Node.js 16+ ([download](https://nodejs.org/))
+- An API key: **OpenAI** (recommended now) OR **Claude** (when you have credits)
+
+### Setup
+
+**Option 1: Interactive (Recommended)**
+```bash
+git clone <repo>
+cd archie
+npm install
+./setup.sh  # Prompts for API keys
+npm start
+```
+
+**Option 2: Manual**
+```bash
+git clone <repo>
+cd archie
+npm install
+cp .env.example .env
+# Edit .env and add your API key(s)
+npm start
+```
+
+---
+
+## 📚 Documentation
+
+- **[SETUP.md](SETUP.md)** - Complete setup, testing, troubleshooting guide (read this first!)
+- **[DEMO_SCRIPT.md](DEMO_SCRIPT.md)** - Hackathon/presentation script
+- **[.env.example](.env.example)** - Configuration template
+
+---
+
+## 🧪 Testing
+
+Verify your setup works:
+
+```bash
+npm test
+```
+
+This checks:
+- ✅ .env file exists
+- ✅ API keys configured
+- ✅ Dependencies installed
+- ✅ Server starts correctly
+- ✅ Health endpoint responds
+
+---
+
+## 🎯 Use Cases
+
+### Healthcare (HIPAA)
+**Archie detects** medical/patient keywords and automatically:
+- Flags HIPAA requirements
+- Recommends encrypted databases
+- Suggests HIPAA-compliant hosting (AWS with BAA)
+- Includes audit logging requirements
+- Lists specific security controls
+
+### Payments (PCI-DSS)
+**Archie detects** payment/credit card keywords and automatically:
+- Warns about PCI-DSS compliance
+- Recommends Stripe/PayPal (don't handle cards directly)
+- Explains tokenization approach
+- Includes fraud detection strategies
+
+### High-Scale SaaS
+**Archie adapts** for 100,000+ users:
+- CDN configuration
+- Database sharding strategy
+- Microservices architecture (if appropriate)
+- Auto-scaling setup
+- Multi-region deployment
+
+### Student/Hackathon Projects
+**Archie simplifies** for quick builds:
+- Lightweight tech stacks (Firebase, Supabase)
+- Simple deployment (Vercel, Netlify)
+- Low-cost solutions ($0-50/month)
+- Beginner-friendly technologies
+
+---
+
+## 🔒 Compliance Detection
+
+Archie automatically detects and handles:
+
+| Keywords Detected | Compliance Framework | What Archie Does |
+|-------------------|---------------------|------------------|
+| doctor, patient, medical, health | **HIPAA** | Encrypted DBs, HIPAA hosting, BAA, audit logs |
+| payment, credit card, billing | **PCI-DSS** | Recommends Stripe, tokenization, never store cards |
+| EU, European, GDPR | **GDPR** | Data privacy, right to deletion, consent management |
+| school, student, grades | **FERPA** | Student data protection requirements |
+| financial, banking, audit | **SOC 2** | Security controls, compliance checklist |
+
+---
+
+## 💰 Cost
+
+**Archie itself:** Free and open-source (MIT License)
+
+**AI API costs:**
+- OpenAI GPT-4 Turbo: ~$0.10-0.15 per architecture
+- Claude Sonnet 4.0: ~$0.08-0.12 per architecture
+- Parallel mode: ~$0.18-0.27 per architecture (calls both)
+
+**Estimate:** $10-20 for 100 architecture generations
+
+---
+
+## 🌟 Key Features
+
+### 1. Smart Provider Selection
+- Auto-detects available API keys
+- Uses best available provider
+- Parallel comparison when both configured
+- No manual switching needed
+
+### 2. Comprehensive Output
+Not just "use React and Node.js" - you get:
+- Specific services (AWS Lambda vs EC2)
+- Database schemas with table structures
+- API endpoints with descriptions
+- Security measures with implementation steps
+- Cost breakdowns by service
+
+### 3. Educational
+Every recommendation includes **why**:
+- Why PostgreSQL over MongoDB
+- Why serverless vs traditional servers
+- Why this auth provider
+- Why this cloud region
+
+You don't just get a plan - you **learn** system design.
+
+### 4. Compliance-First
+Compliance isn't an afterthought:
+- Detected automatically from your description
+- Highlighted in red/yellow alerts
+- Specific requirements listed
+- Implementation steps included
+
+---
+
+## 🛣️ Roadmap
+
+**Current (MVP):**
+- ✅ Form-based input
+- ✅ OpenAI + Claude support
+- ✅ Parallel comparison mode
+- ✅ Comprehensive architecture output
+- ✅ Compliance detection
+- ✅ Visual Mermaid diagrams
+
+**Next (v2):**
+- [ ] Conversational AI (chat interface)
+- [ ] User accounts (save blueprints)
+- [ ] Export to PDF
+- [ ] Interactive diagrams (click to learn more)
+- [ ] Compare multiple architectures
+- [ ] Share blueprints via link
+
+**Future (v3):**
+- [ ] Code generation (generate starter projects)
+- [ ] Database schema SQL export
+- [ ] Terraform/CloudFormation templates
+- [ ] Cost calculator (adjust sliders, see costs change)
+- [ ] Community blueprint library
+
+---
+
+## 🤝 Contributing
+
+Ideas for improvements:
+1. Add more compliance frameworks (ISO 27001, FedRAMP)
+2. Support for mobile app architectures
+3. Multi-language support
+4. Integration with cloud provider CLIs
+5. Video tutorial generation
+
+---
+
+## 📝 License
+
+MIT License - Build whatever you want with this!
+
+---
+
+## 🙏 Credits
+
+Built with:
+- [Claude AI](https://www.anthropic.com/claude) by Anthropic (best quality)
+- [OpenAI GPT-4](https://openai.com/) (best speed)
+- [Mermaid.js](https://mermaid.js.org/) (diagrams)
+- [Express.js](https://expressjs.com/) (server)
+
+---
+
+## ❓ FAQ
+
+**Q: Do I need both OpenAI and Claude?**
+A: No! One is enough. OpenAI is recommended now (since you have credits). Add Claude later for parallel comparison.
+
+**Q: Which gives better results?**
+A: Claude Sonnet 4.0 for compliance-heavy apps (healthcare, payments). OpenAI GPT-4 for speed. Parallel mode for best quality.
+
+**Q: How long does it take?**
+A: 15-30 seconds to generate a complete architecture.
+
+**Q: Can I use this for my startup?**
+A: Yes! That's exactly what it's for. Use the blueprint to hire developers or learn to build it yourself.
+
+**Q: Is my data sent to OpenAI/Claude?**
+A: Yes, your product description is sent to generate the architecture. Don't include sensitive business secrets in the description.
+
+**Q: Does it generate code?**
+A: Not yet (v3 feature). Current version generates architecture blueprints and documentation.
+
+---
+
+**Ready to architect your idea?**
+
+```bash
+npm start
+```
+
+**Then go to:** http://localhost:3000
+
+---
+
+**Made with ❤️ for builders who deserve better tools**
+
+Star this repo if Archie helped you! ⭐

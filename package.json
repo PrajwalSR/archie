@@ -5,9 +5,9 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "start:multi": "node server-multi-provider.js",
     "dev": "nodemon server.js",
-    "dev:multi": "nodemon server-multi-provider.js"
+    "test": "node test.js",
+    "setup": "./setup.sh"
   },
   "keywords": [
     "ai",

@@ -74,52 +74,73 @@ function displayResults(data) {
     // Tech Stack
     const techStackContent = document.getElementById('techStackContent');
     techStackContent.innerHTML = '';
-    for (const [key, value] of Object.entries(data.tech_stack)) {
-        const techItem = document.createElement('div');
-        techItem.className = 'tech-item';
-        techItem.innerHTML = `
-            <strong>${capitalizeFirst(key)}:</strong>
-            <p>${value}</p>
-        `;
-        techStackContent.appendChild(techItem);
+    if (data.tech_stack) {
+        for (const [key, value] of Object.entries(data.tech_stack)) {
+            const techItem = document.createElement('div');
+            techItem.className = 'tech-item';
+            techItem.innerHTML = `
+                <strong>${capitalizeFirst(key.replace(/_/g, ' '))}:</strong>
+                <p>${value}</p>
+            `;
+            techStackContent.appendChild(techItem);
+        }
     }
 
     // Component Explanations
     const explanationsContent = document.getElementById('componentExplanations');
     explanationsContent.innerHTML = '';
-    for (const [key, value] of Object.entries(data.component_explanations)) {
-        const expItem = document.createElement('div');
-        expItem.className = 'explanation-item';
-        expItem.innerHTML = `
-            <h4>${capitalizeFirst(key)}</h4>
-            <p>${value}</p>
-        `;
-        explanationsContent.appendChild(expItem);
+    if (data.component_explanations) {
+        for (const [key, value] of Object.entries(data.component_explanations)) {
+            const expItem = document.createElement('div');
+            expItem.className = 'explanation-item';
+            expItem.innerHTML = `
+                <h4>${capitalizeFirst(key.replace(/_/g, ' '))}</h4>
+                <p>${value}</p>
+            `;
+            explanationsContent.appendChild(expItem);
+        }
     }
 
     // Scalability
-    document.getElementById('scalabilityText').textContent = data.scalability_strategy;
+    if (data.scalability_strategy) {
+        document.getElementById('scalabilityText').textContent = data.scalability_strategy;
+    }
 
     // First Steps
     const stepsList = document.getElementById('firstStepsList');
     stepsList.innerHTML = '';
-    data.first_steps.forEach(step => {
-        const li = document.createElement('li');
-        li.textContent = step;
-        stepsList.appendChild(li);
-    });
+    if (data.first_steps) {
+        data.first_steps.forEach(step => {
+            const li = document.createElement('li');
+            li.textContent = step;
+            stepsList.appendChild(li);
+        });
+    }
 
-    // Cost
-    document.getElementById('costText').textContent = data.cost_estimate;
+    // Cost - Handle both old string format and new object format
+    const costElement = document.getElementById('costText');
+    if (data.cost_estimate) {
+        if (typeof data.cost_estimate === 'string') {
+            costElement.textContent = data.cost_estimate;
+        } else if (typeof data.cost_estimate === 'object') {
+            costElement.innerHTML = `
+                <strong>Initial:</strong> ${data.cost_estimate.initial_monthly}<br>
+                <strong>Year 1:</strong> ${data.cost_estimate.year_1_monthly}<br>
+                ${data.cost_estimate.breakdown ? `<strong>Breakdown:</strong> ${data.cost_estimate.breakdown}` : ''}
+            `;
+        }
+    }
 
     // Risks
     const risksList = document.getElementById('risksList');
     risksList.innerHTML = '';
-    data.risks_and_gotchas.forEach(risk => {
-        const li = document.createElement('li');
-        li.textContent = risk;
-        risksList.appendChild(li);
-    });
+    if (data.risks_and_gotchas) {
+        data.risks_and_gotchas.forEach(risk => {
+            const li = document.createElement('li');
+            li.textContent = risk;
+            risksList.appendChild(li);
+        });
+    }
 }
 
 // Show specific section
