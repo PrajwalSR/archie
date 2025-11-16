@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Archie - Your AI Tech Co-Founder</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <h1>🤖 Archie</h1>
+            <p class="tagline">Your AI Tech Co-Founder</p>
+            <p class="subtitle">Turn your product idea into a professional system architecture in seconds</p>
+        </header>
+
+        <!-- Main Content -->
+        <main id="mainContent">
+            <!-- Form Section (Initial View) -->
+            <section id="formSection" class="card">
+                <h2>Tell me about your product idea</h2>
+                <form id="ideaForm">
+                    <div class="form-group">
+                        <label for="idea">
+                            What's your product idea?
+                            <span class="required">*</span>
+                        </label>
+                        <textarea
+                            id="idea"
+                            name="idea"
+                            rows="4"
+                            required
+                            placeholder="Example: An app for doctors to securely share patient MRI scans and collaborate on diagnoses. Patients can also view their own scans."
+                        ></textarea>
+                        <small>Be specific about who uses it and what problem it solves</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="userCount">
+                            Expected users in Year 1
+                            <span class="required">*</span>
+                        </label>
+                        <select id="userCount" name="userCount" required>
+                            <option value="">Select...</option>
+                            <option value="Under 100 (MVP/Testing)">Under 100 (MVP/Testing)</option>
+                            <option value="100-1,000 (Small Launch)">100-1,000 (Small Launch)</option>
+                            <option value="1,000-10,000 (Growing Startup)">1,000-10,000 (Growing Startup)</option>
+                            <option value="10,000-100,000 (Scale-up)">10,000-100,000 (Scale-up)</option>
+                            <option value="100,000+ (High Scale)">100,000+ (High Scale)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="compliance">
+                            Industry / Compliance Needs
+                            <span class="required">*</span>
+                        </label>
+                        <select id="compliance" name="compliance" required>
+                            <option value="">Select...</option>
+                            <option value="Healthcare (HIPAA Required)">Healthcare (HIPAA Required)</option>
+                            <option value="Payments (PCI-DSS Required)">Payments (PCI-DSS Required)</option>
+                            <option value="General (GDPR/Standard)">General (GDPR/Standard Privacy)</option>
+                            <option value="Education (FERPA)">Education (FERPA)</option>
+                            <option value="Financial Services (SOC 2)">Financial Services (SOC 2)</option>
+                            <option value="None (Internal Tool/Low Risk)">None (Internal Tool/Low Risk)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="skillLevel">
+                            Your technical skill level
+                            <span class="required">*</span>
+                        </label>
+                        <select id="skillLevel" name="skillLevel" required>
+                            <option value="">Select...</option>
+                            <option value="Non-technical (Will hire developers)">Non-technical (Will hire developers)</option>
+                            <option value="Basic (Can use no-code tools)">Basic (Can use no-code tools)</option>
+                            <option value="Intermediate (Can code but new to deployment)">Intermediate (Can code but new to deployment)</option>
+                            <option value="Advanced (Experienced developer)">Advanced (Experienced developer)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="timeline">
+                            Timeline to launch MVP
+                            <span class="required">*</span>
+                        </label>
+                        <select id="timeline" name="timeline" required>
+                            <option value="">Select...</option>
+                            <option value="1-2 weeks (Hackathon)">1-2 weeks (Hackathon)</option>
+                            <option value="1-3 months (MVP)">1-3 months (MVP)</option>
+                            <option value="3-6 months (Full Product)">3-6 months (Full Product)</option>
+                            <option value="6+ months (Enterprise)">6+ months (Enterprise)</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn-primary" id="generateBtn">
+                        Generate My Architecture Blueprint
+                    </button>
+                </form>
+            </section>
+
+            <!-- Results Section (Hidden Initially) -->
+            <section id="resultsSection" class="hidden">
+                <div class="results-header">
+                    <h2>Your Custom Architecture Blueprint</h2>
+                    <button id="startOverBtn" class="btn-secondary">Start Over</button>
+                </div>
+
+                <!-- Summary Card -->
+                <div class="card">
+                    <h3>📋 Executive Summary</h3>
+                    <p id="summaryText" class="summary-text"></p>
+                </div>
+
+                <!-- Compliance Alert (Conditional) -->
+                <div id="complianceAlert" class="card alert-card hidden">
+                    <h3>⚠️ Critical Compliance Requirements</h3>
+                    <p id="complianceText"></p>
+                </div>
+
+                <!-- System Diagram -->
+                <div class="card">
+                    <h3>🏗️ System Architecture Diagram</h3>
+                    <div class="diagram-container">
+                        <pre class="mermaid" id="mermaidDiagram">
+                        </pre>
+                    </div>
+                </div>
+
+                <!-- Tech Stack -->
+                <div class="card">
+                    <h3>🛠️ Recommended Tech Stack</h3>
+                    <div id="techStackContent" class="tech-stack-grid"></div>
+                </div>
+
+                <!-- Component Explanations -->
+                <div class="card">
+                    <h3>📚 Component Deep Dive</h3>
+                    <div id="componentExplanations" class="explanations-grid"></div>
+                </div>
+
+                <!-- Scalability Strategy -->
+                <div class="card">
+                    <h3>📈 Scalability Strategy</h3>
+                    <p id="scalabilityText"></p>
+                </div>
+
+                <!-- First Steps -->
+                <div class="card">
+                    <h3>🚀 Your First Steps (Getting Started)</h3>
+                    <ol id="firstStepsList" class="steps-list"></ol>
+                </div>
+
+                <!-- Cost & Risks -->
+                <div class="two-column">
+                    <div class="card">
+                        <h3>💰 Estimated Costs</h3>
+                        <p id="costText" class="cost-text"></p>
+                    </div>
+                    <div class="card">
+                        <h3>⚡ Risks & Gotchas</h3>
+                        <ul id="risksList" class="risks-list"></ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Loading State -->
+            <div id="loadingSection" class="hidden">
+                <div class="loading-spinner"></div>
+                <p class="loading-text">Archie is designing your architecture...</p>
+                <p class="loading-subtext">This may take 10-20 seconds</p>
+            </div>
+
+            <!-- Error State -->
+            <div id="errorSection" class="hidden card error-card">
+                <h3>❌ Oops! Something went wrong</h3>
+                <p id="errorText"></p>
+                <button id="retryBtn" class="btn-primary">Try Again</button>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>Powered by Claude AI • Built for builders, by builders</p>
+        </footer>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
