@@ -59,7 +59,7 @@ function displayResults(data) {
     document.getElementById('summaryText').textContent = data.summary;
 
     // Compliance Alert
-    if (data.compliance_notes && data.compliance_notes.toLowerCase() !== 'none') {
+    if (data.compliance_notes && typeof data.compliance_notes === 'string' && data.compliance_notes.toLowerCase() !== 'none') {
         document.getElementById('complianceAlert').classList.remove('hidden');
         document.getElementById('complianceText').textContent = data.compliance_notes;
     } else {

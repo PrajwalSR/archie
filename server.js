@@ -115,7 +115,7 @@ Generate an EXHAUSTIVE system architecture design covering ALL critical componen
 
   "scalability_strategy": "Detailed strategy for handling growth from current users to 10x scale. Include database sharding, caching layers, CDN, load balancing, microservices if needed",
 
-  "mermaid_diagram": "A DETAILED Mermaid.js flowchart diagram showing the COMPLETE system architecture. Use proper Mermaid syntax with flowchart TB direction. Include: User/Client, Frontend (Web/Mobile), Load Balancer, Backend/API servers, Authentication Service, Database (Primary + Replicas), Cache Layer, File Storage, External Services (Payment, Email, etc.), Monitoring, and ALL data flow arrows. Make it visually comprehensive and professional.",
+  "mermaid_diagram": "A Mermaid.js flowchart diagram showing the system architecture. CRITICAL SYNTAX RULES: (1) Start with exactly 'flowchart TB' on first line, (2) Use simple node syntax: id[Label] or id((Label)), (3) Use simple arrows: --> or ---|label|-->, (4) NO special characters in node IDs (only letters/numbers), (5) Keep it simple and valid. Example format:\nflowchart TB\n    User[User/Client]\n    Frontend[React Frontend]\n    API[Node.js API]\n    DB[(Database)]\n    User-->Frontend\n    Frontend-->API\n    API-->DB\nInclude all major components with clear data flow.",
 
   "component_explanations": {
     "frontend": "What the frontend does and why this specific choice",
@@ -276,11 +276,140 @@ function parseAIResponse(responseText) {
   }
 }
 
-// Main architecture generation with smart provider selection
+// Validate Mermaid diagram syntax
+function validateMermaidSyntax(diagram) {
+  if (!diagram || typeof diagram !== 'string') {
+    return { valid: false, error: 'Diagram is empty or not a string' };
+  }
+
+  const lines = diagram.trim().split('\n');
+
+  // Check if starts with flowchart
+  if (!lines[0].trim().match(/^flowchart\s+(TB|TD|LR|RL|BT)/)) {
+    return { valid: false, error: 'Must start with "flowchart TB" or "flowchart LR"' };
+  }
+
+  // Check for common syntax errors
+  for (let i = 1; i < lines.length; i++) {
+    const line = lines[i].trim();
+    if (!line || line.startsWith('%')) continue; // Skip empty lines and comments
+
+    // Check for invalid characters in node IDs
+    if (line.match(/^[^a-zA-Z0-9_\s\[\]\(\)\-\>|]+/)) {
+      return { valid: false, error: `Invalid node ID on line ${i + 1}: ${line}` };
+    }
+  }
+
+  return { valid: true };
+}
+
+// Validate architecture completeness
+function validateArchitectureCompleteness(data) {
+  const required = [
+    'summary',
+    'tech_stack',
+    'mermaid_diagram',
+    'first_steps',
+    'scalability_strategy'
+  ];
+
+  const missing = [];
+  for (const field of required) {
+    if (!data[field]) {
+      missing.push(field);
+    }
+  }
+
+  if (missing.length > 0) {
+    return { valid: false, missing };
+  }
+
+  // Validate tech_stack has minimum fields
+  if (!data.tech_stack || Object.keys(data.tech_stack).length < 4) {
+    return { valid: false, missing: ['tech_stack needs at least 4 components'] };
+  }
+
+  return { valid: true };
+}
+
+// Generate simple fallback diagram
+function createFallbackDiagram(data) {
+  const stack = data.tech_stack || {};
+
+  return `flowchart TB
+    User[User/Client]
+    Frontend[${stack.frontend ? stack.frontend.split(',')[0] : 'Frontend'}]
+    Backend[${stack.backend ? stack.backend.split(',')[0] : 'Backend API'}]
+    DB[(${stack.database ? stack.database.split(',')[0] : 'Database'})]
+    Auth[${stack.authentication ? stack.authentication.split(',')[0] : 'Authentication'}]
+
+    User-->Frontend
+    Frontend-->Backend
+    Backend-->Auth
+    Backend-->DB
+    Auth-->DB`;
+}
+
+// Fix Mermaid diagram using AI
+async function fixMermaidDiagram(originalDiagram, error, formData) {
+  const fixPrompt = `The following Mermaid diagram has a syntax error. Please fix it and return ONLY the corrected Mermaid code (no markdown, no explanation).
+
+ERROR: ${error}
+
+ORIGINAL DIAGRAM:
+${originalDiagram}
+
+RULES:
+1. Start with "flowchart TB"
+2. Use simple node syntax: id[Label] or id((Label)) or id[(Label)]
+3. Use simple arrows: --> or ---|label|-->
+4. No special characters in node IDs
+5. Return ONLY the fixed Mermaid code
+
+System context: ${formData.idea.substring(0, 100)}...
+
+FIXED DIAGRAM:`;
+
+  try {
+    let response;
+    if (hasOpenAIKey && openaiClient) {
+      const completion = await openaiClient.chat.completions.create({
+        model: 'gpt-3.5-turbo', // Use faster model for fixes
+        messages: [{ role: 'user', content: fixPrompt }],
+        temperature: 0.3,
+        max_tokens: 1000
+      });
+      response = completion.choices[0].message.content;
+    } else if (hasClaudeKey && claudeClient) {
+      const message = await claudeClient.messages.create({
+        model: 'claude-3-haiku-20240307', // Use faster model for fixes
+        max_tokens: 1000,
+        messages: [{ role: 'user', content: fixPrompt }]
+      });
+      response = message.content[0].text;
+    } else {
+      throw new Error('No AI provider available for fix');
+    }
+
+    // Clean up response (remove markdown if present)
+    let fixed = response.trim();
+    fixed = fixed.replace(/```mermaid\s*/g, '').replace(/```\s*/g, '');
+
+    return fixed;
+  } catch (error) {
+    console.error('Failed to fix Mermaid diagram:', error);
+    return null;
+  }
+}
+
+// Main architecture generation with smart provider selection AND validation
 async function generateArchitecture(formData) {
   const prompt = createArchitecturePrompt(formData);
+  let architectureData = null;
+  let provider = null;
+  let model = null;
 
-  // FUTURE: Parallel comparison when both keys available
+  // STEP 1: Generate architecture (parallel or single provider)
   if (hasClaudeKey && hasOpenAIKey) {
     console.log('🔄 Both providers available - running parallel comparison...');
 
@@ -336,14 +465,9 @@ async function generateArchitecture(formData) {
 
       console.log(`🏆 Winner: ${winner.provider} (score: ${winner.score})`);
 
-      return {
-        ...winner.data,
-        _meta: {
-          provider: winner.provider,
-          model: winner.model,
-          score: winner.score
-        }
-      };
+      architectureData = winner.data;
+      provider = winner.provider;
+      model = winner.model;
 
     } catch (error) {
       console.error('Parallel comparison failed:', error);
@@ -351,35 +475,79 @@ async function generateArchitecture(formData) {
     }
   }
 
-  // CURRENT: Single provider mode
-  if (hasClaudeKey) {
+  // Single provider mode (if parallel failed or only one provider)
+  if (!architectureData && hasClaudeKey) {
     console.log('🧠 Using Claude (best quality)...');
     const response = await callClaude(prompt);
-    const data = parseAIResponse(response.text);
-    return {
-      ...data,
-      _meta: {
-        provider: 'Claude',
-        model: response.model
-      }
-    };
+    architectureData = parseAIResponse(response.text);
+    provider = 'Claude';
+    model = response.model;
   }
 
-  if (hasOpenAIKey) {
+  if (!architectureData && hasOpenAIKey) {
     console.log('🧠 Using OpenAI...');
     const response = await callOpenAI(prompt);
-    const data = parseAIResponse(response.text);
-    return {
-      ...data,
-      _meta: {
-        provider: 'OpenAI',
-        model: response.model
-      }
-    };
+    architectureData = parseAIResponse(response.text);
+    provider = 'OpenAI';
+    model = response.model;
   }
 
-  // No providers available
-  throw new Error('NO_API_KEYS');
+  if (!architectureData) {
+    throw new Error('NO_API_KEYS');
+  }
+
+  // STEP 2: Validate completeness
+  console.log('🔍 Validating architecture completeness...');
+  const completenessCheck = validateArchitectureCompleteness(architectureData);
+  if (!completenessCheck.valid) {
+    console.warn('⚠️  Architecture incomplete, missing:', completenessCheck.missing);
+    // Continue anyway, but log warning
+  }
+
+  // STEP 3: Validate and fix Mermaid diagram
+  console.log('🎨 Validating Mermaid diagram...');
+  const diagramCheck = validateMermaidSyntax(architectureData.mermaid_diagram);
+
+  if (!diagramCheck.valid) {
+    console.warn(`⚠️  Mermaid diagram invalid: ${diagramCheck.error}`);
+    console.log('🔧 Attempting to fix diagram...');
+
+    // Try to fix the diagram
+    const fixedDiagram = await fixMermaidDiagram(
+      architectureData.mermaid_diagram,
+      diagramCheck.error,
+      formData
+    );
+
+    if (fixedDiagram) {
+      const fixedCheck = validateMermaidSyntax(fixedDiagram);
+      if (fixedCheck.valid) {
+        console.log('✅ Diagram fixed successfully!');
+        architectureData.mermaid_diagram = fixedDiagram;
+      } else {
+        console.warn('⚠️  Fix attempt failed, using fallback diagram');
+        architectureData.mermaid_diagram = createFallbackDiagram(architectureData);
+        architectureData._diagram_note = 'Using simplified diagram due to syntax errors';
+      }
+    } else {
+      console.warn('⚠️  Could not fix diagram, using fallback');
+      architectureData.mermaid_diagram = createFallbackDiagram(architectureData);
+      architectureData._diagram_note = 'Using simplified diagram due to syntax errors';
+    }
+  } else {
+    console.log('✅ Diagram validation passed!');
+  }
+
+  // STEP 4: Add metadata
+  return {
+    ...architectureData,
+    _meta: {
+      provider,
+      model,
+      validated: true,
+      diagram_status: diagramCheck.valid ? 'original' : 'fixed_or_fallback'
+    }
+  };
 }
 
 // API endpoint to generate architecture
