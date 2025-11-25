@@ -66,29 +66,42 @@ Timeline: 3-6 months
 
 ## 🤖 AI Providers (Smart Selection)
 
-Archie supports **OpenAI** and **Claude** with automatic quality comparison.
+Archie supports **Google Gemini**, **OpenAI**, and **Claude** with automatic quality comparison.
 
-### Current: OpenAI Only
+### ⭐ Recommended: Google Gemini (FREE with $300 Credits!)
 ```bash
 # Add to .env
-OPENAI_API_KEY=sk-your-key-here
+GOOGLE_API_KEY=your-key-here
 ```
-- Uses GPT-4 Turbo (best OpenAI model)
-- Fast, comprehensive architectures
-- Perfect for getting started
+- Get your key: [https://aistudio.google.com/app/apikey](https://aistudio.google.com/app/apikey)
+- Uses Gemini 1.5 Pro (excellent quality)
+- **FREE with $300 Google Cloud credits**
+- Perfect for getting started without spending money!
 
-### Future: Parallel Comparison Mode (When you add Claude)
+### Alternative: OpenAI or Claude
 ```bash
-# Add both to .env
-OPENAI_API_KEY=sk-your-key
+# OpenAI
+OPENAI_API_KEY=sk-your-key-here
+
+# Claude
 ANTHROPIC_API_KEY=sk-ant-your-key
 ```
-- Calls **both** OpenAI and Claude simultaneously
+- OpenAI GPT-4 Turbo: Fast, comprehensive
+- Claude Sonnet 4: Excellent for compliance (HIPAA, PCI-DSS)
+
+### 🚀 Parallel Comparison Mode (Multiple Keys)
+```bash
+# Add any combination to .env
+GOOGLE_API_KEY=your-gemini-key
+OPENAI_API_KEY=sk-your-openai-key
+ANTHROPIC_API_KEY=sk-ant-your-claude-key
+```
+- Calls **all configured providers** simultaneously
 - Compares quality using scoring algorithm
 - **Returns the best result automatically**
-- No code changes needed - just add the key!
+- No code changes needed - just add the keys!
 
-**Why?** Claude excels at compliance (HIPAA, PCI-DSS) and security depth. OpenAI is faster. Parallel mode gives you the best of both.
+**Why?** Each provider has strengths. Gemini is free and excellent. Claude excels at compliance. OpenAI is fast. Parallel mode gives you the best of all worlds.
 
 ---
 
@@ -115,7 +128,7 @@ ANTHROPIC_API_KEY=sk-ant-your-key
 
 ### Prerequisites
 - Node.js 16+ ([download](https://nodejs.org/))
-- An API key: **OpenAI** (recommended now) OR **Claude** (when you have credits)
+- An API key: **Google Gemini** (recommended - FREE $300 credits!), **OpenAI**, or **Claude**
 
 ### Setup
 
@@ -218,11 +231,14 @@ Archie automatically detects and handles:
 **Archie itself:** Free and open-source (MIT License)
 
 **AI API costs:**
+- **Google Gemini 1.5 Pro: FREE** (with $300 Google Cloud credits - covers thousands of generations!)
 - OpenAI GPT-4 Turbo: ~$0.10-0.15 per architecture
 - Claude Sonnet 4.0: ~$0.08-0.12 per architecture
-- Parallel mode: ~$0.18-0.27 per architecture (calls both)
+- Parallel mode: Varies by configured providers
 
-**Estimate:** $10-20 for 100 architecture generations
+**Estimate:**
+- With Gemini: FREE for thousands of generations
+- With paid providers: $10-20 for 100 architecture generations
 
 ---
 
@@ -307,8 +323,9 @@ MIT License - Build whatever you want with this!
 ## 🙏 Credits
 
 Built with:
-- [Claude AI](https://www.anthropic.com/claude) by Anthropic (best quality)
-- [OpenAI GPT-4](https://openai.com/) (best speed)
+- [Google Gemini](https://ai.google.dev/) by Google (FREE with $300 credits!)
+- [Claude AI](https://www.anthropic.com/claude) by Anthropic (excellent quality)
+- [OpenAI GPT-4](https://openai.com/) (fast)
 - [Mermaid.js](https://mermaid.js.org/) (diagrams)
 - [Express.js](https://expressjs.com/) (server)
 
@@ -316,11 +333,11 @@ Built with:
 
 ## ❓ FAQ
 
-**Q: Do I need both OpenAI and Claude?**
-A: No! One is enough. OpenAI is recommended now (since you have credits). Add Claude later for parallel comparison.
+**Q: Do I need multiple API keys?**
+A: No! One is enough. **Google Gemini is recommended** (FREE with $300 credits). Add more providers later for parallel comparison.
 
 **Q: Which gives better results?**
-A: Claude Sonnet 4.0 for compliance-heavy apps (healthcare, payments). OpenAI GPT-4 for speed. Parallel mode for best quality.
+A: Google Gemini 1.5 Pro is excellent and FREE. Claude Sonnet 4.0 for compliance-heavy apps (healthcare, payments). OpenAI GPT-4 for speed. Parallel mode for best quality.
 
 **Q: How long does it take?**
 A: 15-30 seconds to generate a complete architecture.

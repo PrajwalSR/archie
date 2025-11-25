@@ -13,10 +13,12 @@ app.use(express.static('public'));
 // Initialize AI clients based on available API keys
 let claudeClient = null;
 let openaiClient = null;
+let geminiClient = null;
 
 // Auto-detect available providers
 const hasClaudeKey = !!process.env.ANTHROPIC_API_KEY;
 const hasOpenAIKey = !!process.env.OPENAI_API_KEY;
+const hasGeminiKey = !!process.env.GOOGLE_API_KEY;
 
 if (hasClaudeKey) {
   const Anthropic = require('@anthropic-ai/sdk');
@@ -32,9 +34,31 @@ if (hasOpenAIKey) {
   });
 }
 
+if (hasGeminiKey) {
+  const { GoogleGenerativeAI } = require('@google/generative-ai');
+  geminiClient = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY);
+}
+
+// Helper function to get cloud platform examples
+function getCloudExamples(cloudPlatform) {
+  const examples = {
+    'Google Cloud (GCP)': 'Cloud Run, Cloud SQL, Cloud Storage, BigQuery, Firestore',
+    'Amazon Web Services (AWS)': 'Lambda, RDS, S3, DynamoDB, API Gateway',
+    'Microsoft Azure': 'Azure Functions, Azure SQL, Blob Storage, Cosmos DB, API Management'
+  };
+  return examples[cloudPlatform] || 'cloud services';
+}
+
 // Enhanced Mega-Prompt for Maximum Detail
 function createArchitecturePrompt(formData) {
-  const { idea, userCount, compliance, skillLevel, timeline } = formData;
+  const { idea, userCount, compliance, skillLevel, timeline, cloudPlatform } = formData;
+
+  // Build cloud platform guidance
+  let cloudGuidance = '';
+  if (cloudPlatform && cloudPlatform !== 'No Preference') {
+    const platformName = cloudPlatform.replace(/\s*\(.*?\)\s*/g, ''); // Remove (AWS), (GCP), etc.
+    cloudGuidance = `\n- CRITICAL: User prefers ${platformName}. You MUST primarily use ${platformName} services (e.g., ${getCloudExamples(cloudPlatform)}) unless a specific service is absolutely critical and unavailable on ${platformName}.`;
+  }
 
   return `You are Archie, an elite AI system architect and technical co-founder with expertise in enterprise-scale architecture design. Your job is to analyze a product idea and generate a COMPREHENSIVE, production-ready system architecture blueprint.
 
@@ -45,7 +69,7 @@ CONTEXT:
 - Expected users in Year 1: ${userCount}
 - Compliance requirements: ${compliance}
 - Builder's technical skill level: ${skillLevel}
-- Timeline to launch: ${timeline}
+- Timeline to launch: ${timeline}${cloudGuidance ? cloudGuidance : '\n- Cloud platform: No specific preference (recommend based on requirements)'}
 
 YOUR TASK:
 Generate an EXHAUSTIVE system architecture design covering ALL critical components. Your response MUST be a valid JSON object with this exact structure:
@@ -211,9 +235,14 @@ function scoreArchitectureQuality(data) {
 
 // Call Claude API
 async function callClaude(prompt) {
+  return callClaudeWithModel(prompt, process.env.CLAUDE_MODEL || 'claude-sonnet-4-20250514');
+}
+
+// Call Claude API with specific model
+async function callClaudeWithModel(prompt, model) {
   try {
     const message = await claudeClient.messages.create({
-      model: process.env.CLAUDE_MODEL || 'claude-sonnet-4-20250514',
+      model: model,
       max_tokens: 8192, // Increased for comprehensive output
       messages: [{
         role: 'user',
@@ -224,7 +253,7 @@ async function callClaude(prompt) {
     return {
       text: message.content[0].text,
       provider: 'Claude',
-      model: process.env.CLAUDE_MODEL || 'claude-sonnet-4-20250514'
+      model: model
     };
   } catch (error) {
     console.error('Claude API error:', error.message);
@@ -234,9 +263,14 @@ async function callClaude(prompt) {
 
 // Call OpenAI API
 async function callOpenAI(prompt) {
+  return callOpenAIWithModel(prompt, process.env.OPENAI_MODEL || 'gpt-4-turbo-preview');
+}
+
+// Call OpenAI API with specific model
+async function callOpenAIWithModel(prompt, model) {
   try {
     const completion = await openaiClient.chat.completions.create({
-      model: process.env.OPENAI_MODEL || 'gpt-4-turbo-preview',
+      model: model,
       messages: [{
         role: 'system',
         content: 'You are Archie, an elite system architect. You always respond with comprehensive, valid JSON only, no markdown formatting.'
@@ -252,10 +286,47 @@ async function callOpenAI(prompt) {
     return {
       text: completion.choices[0].message.content,
       provider: 'OpenAI',
-      model: process.env.OPENAI_MODEL || 'gpt-4-turbo-preview'
+      model: model
     };
   } catch (error) {
     console.error('OpenAI API error:', error.message);
+    throw error;
+  }
+}
+
+// Call Gemini API
+async function callGemini(prompt) {
+  return callGeminiWithModel(prompt, process.env.GEMINI_MODEL || 'gemini-2.5-flash');
+}
+
+// Call Gemini API with specific model
+async function callGeminiWithModel(prompt, modelName) {
+  try {
+    const model = geminiClient.getGenerativeModel({
+      model: modelName
+    });
+
+    const result = await model.generateContent({
+      contents: [{
+        role: 'user',
+        parts: [{
+          text: 'You are Archie, an elite system architect. You MUST respond with ONLY valid JSON (no markdown code blocks, no explanations before or after). Your entire response should be parseable JSON starting with { and ending with }.\n\n' + prompt
+        }]
+      }],
+      generationConfig: {
+        temperature: 0.7,
+        maxOutputTokens: 8192
+      }
+    });
+
+    const response = await result.response;
+    return {
+      text: response.text(),
+      provider: 'Gemini',
+      model: modelName
+    };
+  } catch (error) {
+    console.error('Gemini API error:', error.message);
     throw error;
   }
 }
@@ -266,13 +337,31 @@ function parseAIResponse(responseText) {
     return JSON.parse(responseText);
   } catch (parseError) {
     // Try to extract JSON from markdown code blocks
-    const jsonMatch = responseText.match(/```json\s*([\s\S]*?)\s*```/) ||
-                      responseText.match(/```\s*([\s\S]*?)\s*```/);
+    let cleanText = responseText.trim();
+
+    // Remove markdown code blocks
+    const jsonMatch = cleanText.match(/```json\s*([\s\S]*?)\s*```/) ||
+                      cleanText.match(/```\s*([\s\S]*?)\s*```/);
     if (jsonMatch) {
-      return JSON.parse(jsonMatch[1]);
-    } else {
-      throw new Error('Failed to parse AI response as JSON');
+      cleanText = jsonMatch[1].trim();
     }
+
+    // Try to find JSON object boundaries
+    const firstBrace = cleanText.indexOf('{');
+    const lastBrace = cleanText.lastIndexOf('}');
+
+    if (firstBrace !== -1 && lastBrace !== -1 && lastBrace > firstBrace) {
+      cleanText = cleanText.substring(firstBrace, lastBrace + 1);
+      try {
+        return JSON.parse(cleanText);
+      } catch (e) {
+        console.error('Extracted text:', cleanText.substring(0, 200));
+        throw new Error('Failed to parse extracted JSON');
+      }
+    }
+
+    console.error('Response text:', responseText.substring(0, 500));
+    throw new Error('Failed to parse AI response as JSON - no valid JSON found');
   }
 }
 
@@ -372,7 +461,13 @@ FIXED DIAGRAM:`;
 
   try {
     let response;
-    if (hasOpenAIKey && openaiClient) {
+    if (hasGeminiKey && geminiClient) {
+      const model = geminiClient.getGenerativeModel({
+        model: 'gemini-1.5-flash' // Use faster model for fixes
+      });
+      const result = await model.generateContent(fixPrompt);
+      response = result.response.text();
+    } else if (hasOpenAIKey && openaiClient) {
       const completion = await openaiClient.chat.completions.create({
         model: 'gpt-3.5-turbo', // Use faster model for fixes
         messages: [{ role: 'user', content: fixPrompt }],
@@ -409,54 +504,82 @@ async function generateArchitecture(formData) {
   let provider = null;
   let model = null;
 
-  // STEP 1: Generate architecture (parallel or single provider)
-  if (hasClaudeKey && hasOpenAIKey) {
-    console.log('🔄 Both providers available - running parallel comparison...');
+  // STEP 1: Determine which providers to use based on user selection
+  const { aiProviders, providerModels } = formData;
+
+  let selectedProviders = [];
+
+  if (aiProviders && aiProviders.length > 0) {
+    // User-selected providers from form
+    if (aiProviders.includes('gemini') && hasGeminiKey) {
+      const geminiModel = providerModels?.gemini || process.env.GEMINI_MODEL || 'gemini-2.5-flash';
+      selectedProviders.push({
+        name: 'Gemini',
+        call: () => callGeminiWithModel(prompt, geminiModel),
+        model: geminiModel
+      });
+    }
+    if (aiProviders.includes('openai') && hasOpenAIKey) {
+      const openaiModel = providerModels?.openai || process.env.OPENAI_MODEL || 'gpt-4-turbo-preview';
+      selectedProviders.push({
+        name: 'OpenAI',
+        call: () => callOpenAIWithModel(prompt, openaiModel),
+        model: openaiModel
+      });
+    }
+    if (aiProviders.includes('claude') && hasClaudeKey) {
+      const claudeModel = providerModels?.claude || process.env.CLAUDE_MODEL || 'claude-sonnet-4-20250514';
+      selectedProviders.push({
+        name: 'Claude',
+        call: () => callClaudeWithModel(prompt, claudeModel),
+        model: claudeModel
+      });
+    }
+  } else {
+    // Fallback: use all available providers (backward compatibility)
+    if (hasGeminiKey) selectedProviders.push({ name: 'Gemini', call: () => callGemini(prompt) });
+    if (hasClaudeKey) selectedProviders.push({ name: 'Claude', call: () => callClaude(prompt) });
+    if (hasOpenAIKey) selectedProviders.push({ name: 'OpenAI', call: () => callOpenAI(prompt) });
+  }
+
+  const availableProviders = selectedProviders;
+
+  if (availableProviders.length > 1) {
+    console.log(`🔄 Multiple providers available (${availableProviders.map(p => p.name).join(', ')}) - running parallel comparison...`);
 
     try {
-      // Call both in parallel
-      const [claudeResponse, openaiResponse] = await Promise.allSettled([
-        callClaude(prompt),
-        callOpenAI(prompt)
-      ]);
+      // Call all available providers in parallel
+      const responses = await Promise.allSettled(
+        availableProviders.map(p => p.call())
+      );
 
-      // Parse both responses
+      // Parse all responses
       const results = [];
 
-      if (claudeResponse.status === 'fulfilled') {
-        try {
-          const claudeData = parseAIResponse(claudeResponse.value.text);
-          const claudeScore = scoreArchitectureQuality(claudeData);
-          results.push({
-            data: claudeData,
-            score: claudeScore,
-            provider: 'Claude',
-            model: claudeResponse.value.model
-          });
-          console.log(`✅ Claude score: ${claudeScore}`);
-        } catch (e) {
-          console.error('❌ Claude parsing failed:', e.message);
-        }
-      }
+      responses.forEach((response, index) => {
+        const providerName = availableProviders[index].name;
 
-      if (openaiResponse.status === 'fulfilled') {
-        try {
-          const openaiData = parseAIResponse(openaiResponse.value.text);
-          const openaiScore = scoreArchitectureQuality(openaiData);
-          results.push({
-            data: openaiData,
-            score: openaiScore,
-            provider: 'OpenAI',
-            model: openaiResponse.value.model
-          });
-          console.log(`✅ OpenAI score: ${openaiScore}`);
-        } catch (e) {
-          console.error('❌ OpenAI parsing failed:', e.message);
+        if (response.status === 'fulfilled') {
+          try {
+            const data = parseAIResponse(response.value.text);
+            const score = scoreArchitectureQuality(data);
+            results.push({
+              data: data,
+              score: score,
+              provider: providerName,
+              model: response.value.model
+            });
+            console.log(`✅ ${providerName} score: ${score}`);
+          } catch (e) {
+            console.error(`❌ ${providerName} parsing failed:`, e.message);
+          }
+        } else {
+          console.error(`❌ ${providerName} call failed:`, response.reason?.message);
         }
-      }
+      });
 
       if (results.length === 0) {
-        throw new Error('Both providers failed to generate valid architecture');
+        throw new Error('All providers failed to generate valid architecture');
       }
 
       // Return the highest scoring result
@@ -476,8 +599,16 @@ async function generateArchitecture(formData) {
   }
 
   // Single provider mode (if parallel failed or only one provider)
+  if (!architectureData && hasGeminiKey) {
+    console.log('🧠 Using Gemini...');
+    const response = await callGemini(prompt);
+    architectureData = parseAIResponse(response.text);
+    provider = 'Gemini';
+    model = response.model;
+  }
+
   if (!architectureData && hasClaudeKey) {
-    console.log('🧠 Using Claude (best quality)...');
+    console.log('🧠 Using Claude...');
     const response = await callClaude(prompt);
     architectureData = parseAIResponse(response.text);
     provider = 'Claude';
@@ -557,8 +688,13 @@ app.post('/api/generate-architecture', async (req, res) => {
 
     // Validate required fields
     if (!formData.idea || !formData.userCount || !formData.compliance ||
-        !formData.skillLevel || !formData.timeline) {
+        !formData.skillLevel || !formData.timeline || !formData.cloudPlatform) {
       return res.status(400).json({ error: 'All fields are required' });
+    }
+
+    // Validate at least one AI provider is selected
+    if (!formData.aiProviders || formData.aiProviders.length === 0) {
+      return res.status(400).json({ error: 'Please select at least one AI provider' });
     }
 
     console.log('\n📐 Generating architecture...');
@@ -577,8 +713,8 @@ app.post('/api/generate-architecture', async (req, res) => {
     if (error.message === 'NO_API_KEYS') {
       return res.status(500).json({
         error: 'No API keys configured',
-        details: 'Please add either ANTHROPIC_API_KEY or OPENAI_API_KEY to your .env file. Run the setup script: ./setup.sh',
-        setup_help: 'https://platform.openai.com/api-keys or https://console.anthropic.com/'
+        details: 'Please add GOOGLE_API_KEY, ANTHROPIC_API_KEY, or OPENAI_API_KEY to your .env file. Run the setup script: ./setup.sh',
+        setup_help: 'Google AI: https://aistudio.google.com/app/apikey | OpenAI: https://platform.openai.com/api-keys | Claude: https://console.anthropic.com/'
       });
     }
 
@@ -600,16 +736,21 @@ app.post('/api/generate-architecture', async (req, res) => {
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {
+  const configuredCount = [hasClaudeKey, hasOpenAIKey, hasGeminiKey].filter(Boolean).length;
+  const mode = configuredCount > 1 ? 'parallel_comparison' :
+               hasGeminiKey ? 'gemini_only' :
+               hasClaudeKey ? 'claude_only' :
+               hasOpenAIKey ? 'openai_only' : 'no_provider';
+
   res.json({
     status: 'ok',
     message: 'Archie is ready to architect!',
     providers: {
+      gemini: hasGeminiKey ? 'configured' : 'not configured',
       claude: hasClaudeKey ? 'configured' : 'not configured',
       openai: hasOpenAIKey ? 'configured' : 'not configured'
     },
-    mode: (hasClaudeKey && hasOpenAIKey) ? 'parallel_comparison' :
-          hasClaudeKey ? 'claude_only' :
-          hasOpenAIKey ? 'openai_only' : 'no_provider'
+    mode: mode
   });
 });
 
@@ -618,19 +759,34 @@ app.listen(PORT, () => {
   console.log(`📡 Server: http://localhost:${PORT}`);
   console.log('\n🧠 AI Providers:');
 
-  if (hasClaudeKey && hasOpenAIKey) {
-    console.log('   ✅ Claude (configured) - Will use for comparison');
-    console.log('   ✅ OpenAI (configured) - Will use for comparison');
-    console.log('   🔄 Mode: PARALLEL COMPARISON (best quality)');
-  } else if (hasClaudeKey) {
+  const configuredProviders = [];
+  if (hasGeminiKey) {
+    console.log('   ✅ Gemini (configured)');
+    configuredProviders.push('Gemini');
+  } else {
+    console.log('   ⚠️  Gemini (not configured)');
+  }
+
+  if (hasClaudeKey) {
     console.log('   ✅ Claude (configured)');
-    console.log('   ⚠️  OpenAI (not configured)');
-    console.log('   💡 Mode: Claude only');
-  } else if (hasOpenAIKey) {
+    configuredProviders.push('Claude');
+  } else {
     console.log('   ⚠️  Claude (not configured)');
+  }
+
+  if (hasOpenAIKey) {
     console.log('   ✅ OpenAI (configured)');
-    console.log('   💡 Mode: OpenAI only');
-    console.log('   💡 Tip: Add Claude key for even better quality + parallel comparison');
+    configuredProviders.push('OpenAI');
+  } else {
+    console.log('   ⚠️  OpenAI (not configured)');
+  }
+
+  console.log('');
+  if (configuredProviders.length > 1) {
+    console.log(`   🔄 Mode: PARALLEL COMPARISON (${configuredProviders.join(' vs ')}) - Best quality!`);
+  } else if (configuredProviders.length === 1) {
+    console.log(`   💡 Mode: ${configuredProviders[0]} only`);
+    console.log('   💡 Tip: Add more API keys for parallel comparison & better quality');
   } else {
     console.log('   ❌ No API keys configured');
     console.log('   🔧 Run: ./setup.sh to configure');

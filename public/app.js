@@ -14,13 +14,39 @@ const retryBtn = document.getElementById('retryBtn');
 ideaForm.addEventListener('submit', async (e) => {
     e.preventDefault();
 
+    // Get selected AI providers
+    const selectedProviders = [];
+    const providerModels = {};
+
+    if (document.getElementById('useGemini').checked) {
+        selectedProviders.push('gemini');
+        providerModels.gemini = document.getElementById('geminiModel').value;
+    }
+    if (document.getElementById('useOpenAI').checked) {
+        selectedProviders.push('openai');
+        providerModels.openai = document.getElementById('openaiModel').value;
+    }
+    if (document.getElementById('useClaude').checked) {
+        selectedProviders.push('claude');
+        providerModels.claude = document.getElementById('claudeModel').value;
+    }
+
+    // Validate at least one provider is selected
+    if (selectedProviders.length === 0) {
+        alert('Please select at least one AI provider!');
+        return;
+    }
+
     // Get form data
     const formData = {
         idea: document.getElementById('idea').value,
         userCount: document.getElementById('userCount').value,
         compliance: document.getElementById('compliance').value,
         skillLevel: document.getElementById('skillLevel').value,
-        timeline: document.getElementById('timeline').value
+        timeline: document.getElementById('timeline').value,
+        cloudPlatform: document.getElementById('cloudPlatform').value,
+        aiProviders: selectedProviders,
+        providerModels: providerModels
     };
 
     // Show loading state
@@ -69,7 +95,31 @@ function displayResults(data) {
     // Mermaid Diagram
     const mermaidElement = document.getElementById('mermaidDiagram');
     mermaidElement.textContent = data.mermaid_diagram;
-    mermaid.run({ nodes: [mermaidElement] });
+
+    // Try to render the diagram with error handling
+    try {
+        mermaid.run({ nodes: [mermaidElement] }).catch(err => {
+            console.error('Mermaid rendering error:', err);
+            console.error('Diagram syntax:', data.mermaid_diagram);
+            mermaidElement.innerHTML = `
+                <div style="padding: 20px; background: #fff3cd; border: 1px solid #ffc107; border-radius: 4px;">
+                    <strong>⚠️ Diagram Rendering Error</strong>
+                    <p>The AI generated an invalid diagram. Here's the raw syntax:</p>
+                    <pre style="background: #f8f9fa; padding: 10px; overflow-x: auto;">${data.mermaid_diagram}</pre>
+                </div>
+            `;
+        });
+    } catch (err) {
+        console.error('Mermaid initialization error:', err);
+        console.error('Diagram syntax:', data.mermaid_diagram);
+        mermaidElement.innerHTML = `
+            <div style="padding: 20px; background: #fff3cd; border: 1px solid #ffc107; border-radius: 4px;">
+                <strong>⚠️ Diagram Rendering Error</strong>
+                <p>The AI generated an invalid diagram. Here's the raw syntax:</p>
+                <pre style="background: #f8f9fa; padding: 10px; overflow-x: auto;">${data.mermaid_diagram}</pre>
+            </div>
+        `;
+    }
 
     // Tech Stack
     const techStackContent = document.getElementById('techStackContent');

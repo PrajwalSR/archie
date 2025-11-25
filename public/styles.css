@@ -448,3 +448,139 @@ body {
         font-size: 1.2rem;
     }
 }
+
+/* AI Provider Selection Styles */
+.ai-provider-selection {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 10px;
+}
+
+.provider-option {
+    background: var(--bg-secondary);
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    padding: 15px;
+    transition: all 0.3s ease;
+}
+
+.provider-option.available {
+    border-color: var(--success-color);
+    background: #f0fdf4;
+}
+
+.provider-option.available:hover {
+    border-color: var(--success-color);
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.15);
+}
+
+.provider-option.disabled {
+    background: #f3f4f6;
+    border-color: #d1d5db;
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+.provider-option.disabled:hover {
+    border-color: #d1d5db;
+}
+
+.provider-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.provider-header input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+}
+
+.provider-header input[type="checkbox"]:disabled {
+    cursor: not-allowed;
+}
+
+.provider-header label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    margin: 0;
+    flex: 1;
+}
+
+.provider-option.disabled .provider-header label {
+    cursor: not-allowed;
+}
+
+.badge {
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.badge-success {
+    background: var(--success-color);
+    color: white;
+}
+
+.badge-warning {
+    background: var(--warning-color);
+    color: white;
+}
+
+.model-select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    font-size: 0.9rem;
+    background: white;
+    margin-left: 30px;
+    transition: border-color 0.3s ease;
+}
+
+.model-select:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+.model-select:disabled {
+    background: #f9fafb;
+    cursor: not-allowed;
+    color: #9ca3af;
+}
+
+/* Tooltip for disabled providers */
+.provider-option.disabled[title]:hover::after {
+    content: attr(title);
+    position: absolute;
+    background: #1f2937;
+    color: white;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    white-space: nowrap;
+    z-index: 1000;
+    margin-top: -50px;
+    margin-left: 20px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Mobile responsiveness for provider selection */
+@media (max-width: 768px) {
+    .model-select {
+        margin-left: 0;
+        margin-top: 8px;
+    }
+
+    .provider-header {
+        flex-wrap: wrap;
+    }
+}
