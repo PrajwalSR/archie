@@ -1,368 +1,256 @@
-# 🤖 Archie - Your AI Tech Co-Founder
+# Archie - Your AI Tech Co-Founder
 
-Transform your product idea into a professional system architecture blueprint in seconds.
+**AI-powered system architecture design tool that helps you build the perfect tech stack for your product idea.**
 
-**No technical knowledge required.** Just describe your idea, and Archie designs the complete system for you.
+Archie is a conversational architecture design system that uses multiple AI providers (Google Gemini, Anthropic Claude, OpenAI GPT) to help you:
+- Discover the right components for your system
+- Refine your architecture through natural conversation
+- Get detailed configuration and setup instructions
+- Visualize your architecture with interactive diagrams
 
----
+## Features
 
-## ⚡ Quick Start
+### Multi-Phase Conversational System
+1. **Component Discovery** - Identify 5-8 core components based on your product idea
+2. **Interactive Refinement** - Chat naturally to adjust components ("Use AWS instead of GCP")
+3. **Deep Dive** - Get detailed configs, setup steps, best practices for each component
+4. **Interactive Diagrams** - Click components to see detailed information
 
-```bash
-npm install        # Install dependencies
-./setup.sh         # Interactive setup (adds your API keys)
-npm start          # Start Archie
-```
+### AI Provider Flexibility
+- **Google Gemini** - Fast and cost-effective
+- **Anthropic Claude** - Highest quality responses
+- **OpenAI GPT** - Widely used and reliable
+- Choose one or multiple providers for quality comparison
 
-Open http://localhost:3000 and describe your product idea!
+### Client-Side Diagram Generation
+- Mermaid.js-powered interactive flowcharts
+- Click-to-explore component details
+- Color-coded by category (Frontend, Backend, Security, etc.)
+- **50-60% cost savings** vs AI-generated diagrams
 
----
+### Smart Architecture Recommendations
+Based on your inputs:
+- Expected user count
+- Launch timeline
+- Technical skill level
+- Compliance requirements (HIPAA, PCI-DSS, GDPR, SOC 2)
+- Cloud platform preference (GCP, AWS, Azure)
 
-## 🎯 What Archie Does
-
-Archie is an AI-powered system architect that generates **comprehensive, production-ready architecture blueprints** for your product ideas.
-
-### You Get:
-
-✅ **Complete System Diagram** - Visual architecture with all components
-✅ **Tech Stack Recommendations** - Frontend, backend, database, hosting (with justifications)
-✅ **Database Design** - Schema, tables, relationships, indexing strategy
-✅ **API Endpoints** - 5-10 key endpoints for your system
-✅ **Cloud Infrastructure** - Specific AWS/GCP/Azure services
-✅ **Authentication System** - Auth provider, features, implementation
-✅ **Security Architecture** - Encryption, secrets management, DDoS protection
-✅ **Compliance Guidance** - HIPAA, PCI-DSS, GDPR, SOC 2 (automatically detected)
-✅ **Deployment Strategy** - CI/CD, environments, rollback plans
-✅ **Scalability Plan** - How to handle 10x growth
-✅ **Cost Estimates** - Monthly costs (initial + Year 1)
-✅ **First Steps** - Concrete action plan to start building
-✅ **Risks & Gotchas** - What to watch out for
-
----
-
-## 🚀 Example
-
-**Input:**
-```
-Idea: An app for doctors to securely share patient MRI scans
-
-Users: 1,000-10,000
-Compliance: Healthcare (HIPAA Required)
-Skill Level: Non-technical
-Timeline: 3-6 months
-```
-
-**Output in 20 seconds:**
-- 🎯 Complete HIPAA-compliant architecture
-- 🏥 AWS with HIPAA-eligible services (RDS, S3 with encryption)
-- 🔒 Security measures (encryption, audit logging, BAA requirements)
-- 📊 Database schema for users, scans, sharing permissions
-- 🔗 API endpoints for upload, share, view scans
-- 💰 Cost estimate: $200-500/month
-- ⚡ Scalability: CDN for MRI files, database replication
-- ✅ 7-step action plan to start building
-
----
-
-## 🤖 AI Providers (Smart Selection)
-
-Archie supports **Google Gemini**, **OpenAI**, and **Claude** with automatic quality comparison.
-
-### ⭐ Recommended: Google Gemini (FREE with $300 Credits!)
-```bash
-# Add to .env
-GOOGLE_API_KEY=your-key-here
-```
-- Get your key: [https://aistudio.google.com/app/apikey](https://aistudio.google.com/app/apikey)
-- Uses Gemini 1.5 Pro (excellent quality)
-- **FREE with $300 Google Cloud credits**
-- Perfect for getting started without spending money!
-
-### Alternative: OpenAI or Claude
-```bash
-# OpenAI
-OPENAI_API_KEY=sk-your-key-here
-
-# Claude
-ANTHROPIC_API_KEY=sk-ant-your-key
-```
-- OpenAI GPT-4 Turbo: Fast, comprehensive
-- Claude Sonnet 4: Excellent for compliance (HIPAA, PCI-DSS)
-
-### 🚀 Parallel Comparison Mode (Multiple Keys)
-```bash
-# Add any combination to .env
-GOOGLE_API_KEY=your-gemini-key
-OPENAI_API_KEY=sk-your-openai-key
-ANTHROPIC_API_KEY=sk-ant-your-claude-key
-```
-- Calls **all configured providers** simultaneously
-- Compares quality using scoring algorithm
-- **Returns the best result automatically**
-- No code changes needed - just add the keys!
-
-**Why?** Each provider has strengths. Gemini is free and excellent. Claude excels at compliance. OpenAI is fast. Parallel mode gives you the best of all worlds.
-
----
-
-## 📋 Who Is This For?
-
-### 1. Non-Technical Founders
-- You have a brilliant idea but don't know where to start
-- You need a blueprint to hire developers against
-- You want to understand the "technical side" before pitching investors
-
-### 2. Student Builders
-- You can code but don't know deployment/scaling
-- Your projects are "stuck on your laptop"
-- You need to learn system design for interviews/hackathons
-
-### 3. Technical Founders
-- You want a second opinion on your architecture
-- You need to evaluate different approaches quickly
-- You're exploring compliance requirements (HIPAA, PCI, SOC 2)
-
----
-
-## 🛠️ Installation
+## Quick Start
 
 ### Prerequisites
-- Node.js 16+ ([download](https://nodejs.org/))
-- An API key: **Google Gemini** (recommended - FREE $300 credits!), **OpenAI**, or **Claude**
+- Node.js (v16 or higher)
+- npm or yarn
+- At least one AI provider API key (Gemini, Claude, or OpenAI)
 
-### Setup
+### Installation
 
-**Option 1: Interactive (Recommended)**
 ```bash
-git clone <repo>
+# Clone the repository
+git clone <your-repo-url>
 cd archie
-npm install
-./setup.sh  # Prompts for API keys
-npm start
-```
 
-**Option 2: Manual**
-```bash
-git clone <repo>
-cd archie
+# Install dependencies
 npm install
+
+# Set up environment variables
 cp .env.example .env
-# Edit .env and add your API key(s)
-npm start
+# Edit .env and add your API keys
 ```
 
----
+### Configuration
 
-## 📚 Documentation
+Edit `.env` file:
 
-- **[SETUP.md](SETUP.md)** - Complete setup, testing, troubleshooting guide (read this first!)
-- **[DEMO_SCRIPT.md](DEMO_SCRIPT.md)** - Hackathon/presentation script
-- **[.env.example](.env.example)** - Configuration template
+```env
+# Server Configuration
+PORT=3000
 
----
+# AI Provider API Keys (at least one required)
+GOOGLE_API_KEY=your_google_api_key_here
+ANTHROPIC_API_KEY=your_anthropic_api_key_here
+OPENAI_API_KEY=your_openai_api_key_here
 
-## 🧪 Testing
+# Optional: Default Models
+GEMINI_MODEL=gemini-2.0-flash-exp
+CLAUDE_MODEL=claude-sonnet-4-20250514
+OPENAI_MODEL=gpt-4-turbo-preview
+```
 
-Verify your setup works:
+### Running the Application
 
 ```bash
-npm test
-```
-
-This checks:
-- ✅ .env file exists
-- ✅ API keys configured
-- ✅ Dependencies installed
-- ✅ Server starts correctly
-- ✅ Health endpoint responds
-
----
-
-## 🎯 Use Cases
-
-### Healthcare (HIPAA)
-**Archie detects** medical/patient keywords and automatically:
-- Flags HIPAA requirements
-- Recommends encrypted databases
-- Suggests HIPAA-compliant hosting (AWS with BAA)
-- Includes audit logging requirements
-- Lists specific security controls
-
-### Payments (PCI-DSS)
-**Archie detects** payment/credit card keywords and automatically:
-- Warns about PCI-DSS compliance
-- Recommends Stripe/PayPal (don't handle cards directly)
-- Explains tokenization approach
-- Includes fraud detection strategies
-
-### High-Scale SaaS
-**Archie adapts** for 100,000+ users:
-- CDN configuration
-- Database sharding strategy
-- Microservices architecture (if appropriate)
-- Auto-scaling setup
-- Multi-region deployment
-
-### Student/Hackathon Projects
-**Archie simplifies** for quick builds:
-- Lightweight tech stacks (Firebase, Supabase)
-- Simple deployment (Vercel, Netlify)
-- Low-cost solutions ($0-50/month)
-- Beginner-friendly technologies
-
----
-
-## 🔒 Compliance Detection
-
-Archie automatically detects and handles:
-
-| Keywords Detected | Compliance Framework | What Archie Does |
-|-------------------|---------------------|------------------|
-| doctor, patient, medical, health | **HIPAA** | Encrypted DBs, HIPAA hosting, BAA, audit logs |
-| payment, credit card, billing | **PCI-DSS** | Recommends Stripe, tokenization, never store cards |
-| EU, European, GDPR | **GDPR** | Data privacy, right to deletion, consent management |
-| school, student, grades | **FERPA** | Student data protection requirements |
-| financial, banking, audit | **SOC 2** | Security controls, compliance checklist |
-
----
-
-## 💰 Cost
-
-**Archie itself:** Free and open-source (MIT License)
-
-**AI API costs:**
-- **Google Gemini 1.5 Pro: FREE** (with $300 Google Cloud credits - covers thousands of generations!)
-- OpenAI GPT-4 Turbo: ~$0.10-0.15 per architecture
-- Claude Sonnet 4.0: ~$0.08-0.12 per architecture
-- Parallel mode: Varies by configured providers
-
-**Estimate:**
-- With Gemini: FREE for thousands of generations
-- With paid providers: $10-20 for 100 architecture generations
-
----
-
-## 🌟 Key Features
-
-### 1. Smart Provider Selection
-- Auto-detects available API keys
-- Uses best available provider
-- Parallel comparison when both configured
-- No manual switching needed
-
-### 2. Comprehensive Output
-Not just "use React and Node.js" - you get:
-- Specific services (AWS Lambda vs EC2)
-- Database schemas with table structures
-- API endpoints with descriptions
-- Security measures with implementation steps
-- Cost breakdowns by service
-
-### 3. Educational
-Every recommendation includes **why**:
-- Why PostgreSQL over MongoDB
-- Why serverless vs traditional servers
-- Why this auth provider
-- Why this cloud region
-
-You don't just get a plan - you **learn** system design.
-
-### 4. Compliance-First
-Compliance isn't an afterthought:
-- Detected automatically from your description
-- Highlighted in red/yellow alerts
-- Specific requirements listed
-- Implementation steps included
-
----
-
-## 🛣️ Roadmap
-
-**Current (MVP):**
-- ✅ Form-based input
-- ✅ OpenAI + Claude support
-- ✅ Parallel comparison mode
-- ✅ Comprehensive architecture output
-- ✅ Compliance detection
-- ✅ Visual Mermaid diagrams
-
-**Next (v2):**
-- [ ] Conversational AI (chat interface)
-- [ ] User accounts (save blueprints)
-- [ ] Export to PDF
-- [ ] Interactive diagrams (click to learn more)
-- [ ] Compare multiple architectures
-- [ ] Share blueprints via link
-
-**Future (v3):**
-- [ ] Code generation (generate starter projects)
-- [ ] Database schema SQL export
-- [ ] Terraform/CloudFormation templates
-- [ ] Cost calculator (adjust sliders, see costs change)
-- [ ] Community blueprint library
-
----
-
-## 🤝 Contributing
-
-Ideas for improvements:
-1. Add more compliance frameworks (ISO 27001, FedRAMP)
-2. Support for mobile app architectures
-3. Multi-language support
-4. Integration with cloud provider CLIs
-5. Video tutorial generation
-
----
-
-## 📝 License
-
-MIT License - Build whatever you want with this!
-
----
-
-## 🙏 Credits
-
-Built with:
-- [Google Gemini](https://ai.google.dev/) by Google (FREE with $300 credits!)
-- [Claude AI](https://www.anthropic.com/claude) by Anthropic (excellent quality)
-- [OpenAI GPT-4](https://openai.com/) (fast)
-- [Mermaid.js](https://mermaid.js.org/) (diagrams)
-- [Express.js](https://expressjs.com/) (server)
-
----
-
-## ❓ FAQ
-
-**Q: Do I need multiple API keys?**
-A: No! One is enough. **Google Gemini is recommended** (FREE with $300 credits). Add more providers later for parallel comparison.
-
-**Q: Which gives better results?**
-A: Google Gemini 1.5 Pro is excellent and FREE. Claude Sonnet 4.0 for compliance-heavy apps (healthcare, payments). OpenAI GPT-4 for speed. Parallel mode for best quality.
-
-**Q: How long does it take?**
-A: 15-30 seconds to generate a complete architecture.
-
-**Q: Can I use this for my startup?**
-A: Yes! That's exactly what it's for. Use the blueprint to hire developers or learn to build it yourself.
-
-**Q: Is my data sent to OpenAI/Claude?**
-A: Yes, your product description is sent to generate the architecture. Don't include sensitive business secrets in the description.
-
-**Q: Does it generate code?**
-A: Not yet (v3 feature). Current version generates architecture blueprints and documentation.
-
----
-
-**Ready to architect your idea?**
-
-```bash
+# Development mode
 npm start
+
+# The server will start at http://localhost:3000
 ```
 
-**Then go to:** http://localhost:3000
+Visit `http://localhost:3000` in your browser to start using Archie!
+
+## Project Structure
+
+```
+archie/
+├── server/                 # Backend
+│   ├── server.js          # Main Express server
+│   └── services/          # Business logic
+│       ├── conversationManager.js  # Session management
+│       ├── promptBuilder.js        # AI prompt generation
+│       └── aiService.js            # AI provider abstraction
+│
+├── public/                # Frontend
+│   ├── index.html        # Main HTML
+│   ├── css/              # Stylesheets
+│   │   ├── base.css      # Variables, reset, utilities
+│   │   ├── components.css # Form, chat, buttons
+│   │   └── diagram.css   # Diagram and details panel
+│   └── js/               # JavaScript modules
+│       ├── main.js       # App initialization
+│       ├── components/
+│       │   └── chat.js   # Chat UI component
+│       └── services/
+│           ├── api.js           # API client
+│           ├── state.js         # State management
+│           └── mermaidBuilder.js # Diagram generation
+│
+├── .env.example          # Environment template
+├── package.json          # Dependencies
+├── README.md            # This file
+├── SETUP.md             # Detailed setup guide
+└── API.md               # API documentation
+```
+
+## How It Works
+
+### Phase 1: Component Discovery
+1. Fill out the form with your product idea and requirements
+2. Archie analyzes your needs and identifies core components
+3. Review the suggested architecture
+
+### Phase 2: Interactive Refinement
+1. Chat with Archie to refine components
+2. Example: "Use PostgreSQL instead of MySQL"
+3. Example: "Add Redis for caching"
+4. Approve when satisfied
+
+### Phase 3: Deep Dive
+1. Archie fetches detailed configs for each component in parallel
+2. Real-time progress updates via Server-Sent Events
+3. Includes: settings, setup steps, best practices, security notes
+
+### Phase 4: Diagram Display
+1. Interactive Mermaid diagram generated client-side
+2. Click any component to see details below
+3. Color-coded by category
+4. Fully explorable architecture
+
+## AI Provider Selection
+
+Archie supports three AI providers:
+
+| Provider | Strengths | Use Case |
+|----------|-----------|----------|
+| **Google Gemini** | Fast, cost-effective, large context | Quick iterations, budget-conscious |
+| **Anthropic Claude** | Highest quality, detailed responses | Production architectures, complex systems |
+| **OpenAI GPT** | Widely adopted, consistent | General-purpose, familiar interface |
+
+You can select multiple providers to compare quality and get the best results.
+
+## Cost Optimization
+
+Archie is designed for cost efficiency:
+
+1. **Phase-specific prompts** - Small, focused requests instead of one large prompt
+2. **Client-side diagrams** - Mermaid.js generates diagrams (50-60% cost reduction)
+3. **Parallel fetching** - Fast deep dive without sequential AI calls
+4. **Provider choice** - Use cost-effective Gemini for iterations, Claude for final output
+
+## Deployment
+
+See [SETUP.md](SETUP.md) for detailed deployment instructions including:
+- Cloud deployment (Heroku, Railway, Render)
+- Environment configuration
+- Production best practices
+- Monitoring and logging
+
+## API Documentation
+
+See [API.md](API.md) for complete API reference including:
+- All endpoints
+- Request/response formats
+- WebSocket/SSE events
+- Error handling
+
+## Troubleshooting
+
+### No AI providers configured
+**Error:** "No AI providers available"
+**Solution:** Add at least one API key to `.env` file
+
+### Port already in use
+**Error:** "EADDRINUSE: address already in use :::3000"
+**Solution:**
+```bash
+# Kill process on port 3000
+lsof -ti:3000 | xargs kill -9
+
+# Or use a different port
+PORT=3001 npm start
+```
+
+### JSON parsing errors
+**Error:** "Failed to parse JSON response"
+**Solution:** This is usually temporary. The system has auto-retry with repair. If persistent, try a different AI provider.
+
+### Module not found
+**Error:** "Cannot find module"
+**Solution:**
+```bash
+npm install
+```
+
+## Technology Stack
+
+**Backend:**
+- Node.js + Express
+- Server-Sent Events (SSE) for real-time updates
+- In-memory conversation storage (UUID-based)
+
+**Frontend:**
+- Vanilla JavaScript (ES6 modules)
+- Mermaid.js for diagrams
+- CSS3 with CSS variables
+
+**AI Providers:**
+- Google Gemini API
+- Anthropic Claude API
+- OpenAI GPT API
+
+## Future Enhancements
+
+- [ ] Redis for persistent conversation storage
+- [ ] Conversation history and export
+- [ ] Diagram export (PNG, SVG, PDF)
+- [ ] Multi-user collaboration
+- [ ] Custom component templates
+- [ ] Architecture comparison tool
+- [ ] Cost estimation calculator
+
+## Contributing
+
+This is a personal project, but feedback and suggestions are welcome!
+
+## License
+
+MIT License - See LICENSE file for details
+
+## Support
+
+For detailed setup instructions, see [SETUP.md](SETUP.md)
+
+For API documentation, see [API.md](API.md)
 
 ---
 
-**Made with ❤️ for builders who deserve better tools**
-
-Star this repo if Archie helped you! ⭐
+**Built with Claude AI** - Designed for builders, by builders.

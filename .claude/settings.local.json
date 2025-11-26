@@ -1,9 +1,13 @@
 {
   "permissions": {
     "allow": [
+      "Bash(git push)",
       "Bash(cd:*)",
-      "Bash(chmod:*)",
-      "Bash(npm install openai)"
+      "Bash(lsof -ti:3000)",
+      "Bash(xargs kill:*)",
+      "Bash(find:*)",
+      "Bash(cat:*)",
+      "Bash(cd /Users/prajwalshanthakumarirangaswamy/Downloads/My\\ Projects/archie && npm install uuid:*)"
     ],
     "deny": [],
     "ask": []

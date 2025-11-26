@@ -4,255 +4,170 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Archie - Your AI Tech Co-Founder</title>
-    <link rel="stylesheet" href="styles.css">
+
+    <!-- Mermaid.js for diagrams -->
     <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="/css/base.css">
+    <link rel="stylesheet" href="/css/components.css">
+    <link rel="stylesheet" href="/css/diagram.css">
 </head>
 <body>
     <div class="container">
         <!-- Header -->
         <header class="header">
-            <h1>🤖 Archie</h1>
+            <h1 class="logo">
+                <span class="logo-icon">🤖</span> Archie
+            </h1>
             <p class="tagline">Your AI Tech Co-Founder</p>
-            <p class="subtitle">Turn your product idea into a professional system architecture in seconds</p>
         </header>
 
         <!-- Main Content -->
-        <main id="mainContent">
-            <!-- Form Section (Initial View) -->
-            <section id="formSection" class="card">
-                <h2>Tell me about your product idea</h2>
-                <form id="ideaForm">
-                    <div class="form-group">
-                        <label for="idea">
-                            What's your product idea?
-                            <span class="required">*</span>
-                        </label>
-                        <textarea
-                            id="idea"
-                            name="idea"
-                            rows="4"
-                            required
-                            placeholder="Example: An app for doctors to securely share patient MRI scans and collaborate on diagnoses. Patients can also view their own scans."
-                        ></textarea>
-                        <small>Be specific about who uses it and what problem it solves</small>
-                    </div>
+        <main id="app">
+            <!-- Initial Form -->
+            <section id="formSection" class="section">
+                <div class="card">
+                    <h2>Let's Build Your System Architecture</h2>
+                    <p class="subtitle">Tell me about your product idea, and I'll design the perfect tech stack</p>
 
-                    <div class="form-group">
-                        <label for="userCount">
-                            Expected users in Year 1
-                            <span class="required">*</span>
-                        </label>
-                        <select id="userCount" name="userCount" required>
-                            <option value="">Select...</option>
-                            <option value="Under 100 (MVP/Testing)">Under 100 (MVP/Testing)</option>
-                            <option value="100-1,000 (Small Launch)">100-1,000 (Small Launch)</option>
-                            <option value="1,000-10,000 (Growing Startup)">1,000-10,000 (Growing Startup)</option>
-                            <option value="10,000-100,000 (Scale-up)">10,000-100,000 (Scale-up)</option>
-                            <option value="100,000+ (High Scale)">100,000+ (High Scale)</option>
-                        </select>
-                    </div>
+                    <form id="ideaForm">
+                        <div class="form-group">
+                            <label for="idea">Product Idea *</label>
+                            <textarea
+                                id="idea"
+                                name="idea"
+                                rows="4"
+                                placeholder="Describe your product idea (e.g., 'A marketplace for local farmers to sell directly to consumers')"
+                                required
+                            ></textarea>
+                        </div>
 
-                    <div class="form-group">
-                        <label for="compliance">
-                            Industry / Compliance Needs
-                            <span class="required">*</span>
-                        </label>
-                        <select id="compliance" name="compliance" required>
-                            <option value="">Select...</option>
-                            <option value="Healthcare (HIPAA Required)">Healthcare (HIPAA Required)</option>
-                            <option value="Payments (PCI-DSS Required)">Payments (PCI-DSS Required)</option>
-                            <option value="General (GDPR/Standard)">General (GDPR/Standard Privacy)</option>
-                            <option value="Education (FERPA)">Education (FERPA)</option>
-                            <option value="Financial Services (SOC 2)">Financial Services (SOC 2)</option>
-                            <option value="None (Internal Tool/Low Risk)">None (Internal Tool/Low Risk)</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="skillLevel">
-                            Your technical skill level
-                            <span class="required">*</span>
-                        </label>
-                        <select id="skillLevel" name="skillLevel" required>
-                            <option value="">Select...</option>
-                            <option value="Non-technical (Will hire developers)">Non-technical (Will hire developers)</option>
-                            <option value="Basic (Can use no-code tools)">Basic (Can use no-code tools)</option>
-                            <option value="Intermediate (Can code but new to deployment)">Intermediate (Can code but new to deployment)</option>
-                            <option value="Advanced (Experienced developer)">Advanced (Experienced developer)</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="timeline">
-                            Timeline to launch MVP
-                            <span class="required">*</span>
-                        </label>
-                        <select id="timeline" name="timeline" required>
-                            <option value="">Select...</option>
-                            <option value="1-2 weeks (Hackathon)">1-2 weeks (Hackathon)</option>
-                            <option value="1-3 months (MVP)">1-3 months (MVP)</option>
-                            <option value="3-6 months (Full Product)">3-6 months (Full Product)</option>
-                            <option value="6+ months (Enterprise)">6+ months (Enterprise)</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="cloudPlatform">
-                            Preferred Cloud Platform
-                            <span class="required">*</span>
-                        </label>
-                        <select id="cloudPlatform" name="cloudPlatform" required>
-                            <option value="">Select...</option>
-                            <option value="Google Cloud (GCP)">Google Cloud (GCP)</option>
-                            <option value="Amazon Web Services (AWS)">Amazon Web Services (AWS)</option>
-                            <option value="Microsoft Azure">Microsoft Azure</option>
-                            <option value="No Preference">No Preference (Let AI decide)</option>
-                        </select>
-                        <small>The AI will primarily use services from your selected platform</small>
-                    </div>
-
-                    <div class="form-group">
-                        <label>
-                            AI Provider & Model Selection
-                            <span class="required">*</span>
-                        </label>
-                        <small style="display: block; margin-bottom: 10px;">Select one or more providers to compare. Models will run in parallel and the best result wins!</small>
-
-                        <div class="ai-provider-selection">
-                            <!-- Gemini -->
-                            <div class="provider-option available">
-                                <div class="provider-header">
-                                    <input type="checkbox" id="useGemini" name="aiProviders" value="gemini" checked>
-                                    <label for="useGemini">
-                                        <strong>Google Gemini</strong>
-                                        <span class="badge badge-success">✅ FREE - $300 Credits</span>
-                                    </label>
-                                </div>
-                                <select id="geminiModel" name="geminiModel" class="model-select">
-                                    <option value="gemini-2.5-pro">Gemini 2.5 Pro (Best - Reasoning)</option>
-                                    <option value="gemini-2.5-flash">Gemini 2.5 Flash (Balanced)</option>
-                                    <option value="gemini-2.0-flash">Gemini 2.0 Flash (Fast)</option>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="userCount">Expected Users (Year 1) *</label>
+                                <select id="userCount" name="userCount" required>
+                                    <option value="">Select...</option>
+                                    <option value="<100 (MVP/Prototype)">Under 100 (MVP)</option>
+                                    <option value="100-1,000 (Early Growth)">100-1,000 (Early Growth)</option>
+                                    <option value="1,000-10,000 (Scaling)">1,000-10,000 (Scaling)</option>
+                                    <option value="10,000-100,000 (Growth Stage)">10,000-100,000 (Growth)</option>
+                                    <option value="100,000+ (Large Scale)">100,000+ (Large Scale)</option>
                                 </select>
                             </div>
 
-                            <!-- OpenAI -->
-                            <div class="provider-option disabled" title="⚠️ No OpenAI credits available. Add credits at platform.openai.com to enable.">
-                                <div class="provider-header">
-                                    <input type="checkbox" id="useOpenAI" name="aiProviders" value="openai" disabled>
-                                    <label for="useOpenAI">
-                                        <strong>OpenAI</strong>
-                                        <span class="badge badge-warning">⚠️ No Credits</span>
-                                    </label>
-                                </div>
-                                <select id="openaiModel" name="openaiModel" class="model-select" disabled>
-                                    <option value="gpt-4-turbo-preview">GPT-4 Turbo (Best)</option>
-                                    <option value="gpt-4">GPT-4</option>
-                                    <option value="gpt-3.5-turbo">GPT-3.5 Turbo (Faster)</option>
-                                </select>
-                            </div>
-
-                            <!-- Claude -->
-                            <div class="provider-option disabled" title="⚠️ No Claude credits available. Add credits at console.anthropic.com to enable.">
-                                <div class="provider-header">
-                                    <input type="checkbox" id="useClaude" name="aiProviders" value="claude" disabled>
-                                    <label for="useClaude">
-                                        <strong>Anthropic Claude</strong>
-                                        <span class="badge badge-warning">⚠️ No Credits</span>
-                                    </label>
-                                </div>
-                                <select id="claudeModel" name="claudeModel" class="model-select" disabled>
-                                    <option value="claude-sonnet-4-20250514">Claude Sonnet 4 (Best)</option>
-                                    <option value="claude-opus-4-20250514">Claude Opus 4 (Most Capable)</option>
-                                    <option value="claude-3-haiku-20240307">Claude 3 Haiku (Faster)</option>
+                            <div class="form-group">
+                                <label for="timeline">Launch Timeline *</label>
+                                <select id="timeline" name="timeline" required>
+                                    <option value="">Select...</option>
+                                    <option value="1-2 weeks (Hackathon)">1-2 weeks (Hackathon)</option>
+                                    <option value="1 month (Quick MVP)">1 month (Quick MVP)</option>
+                                    <option value="2-3 months (Solid MVP)">2-3 months (Solid MVP)</option>
+                                    <option value="6+ months (Full Product)">6+ months (Full Product)</option>
                                 </select>
                             </div>
                         </div>
-                    </div>
 
-                    <button type="submit" class="btn-primary" id="generateBtn">
-                        Generate My Architecture Blueprint
-                    </button>
-                </form>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="skillLevel">Your Technical Skill Level *</label>
+                                <select id="skillLevel" name="skillLevel" required>
+                                    <option value="">Select...</option>
+                                    <option value="Non-Technical (Need help)">Non-Technical</option>
+                                    <option value="Beginner (Learning to code)">Beginner</option>
+                                    <option value="Intermediate (Built projects)">Intermediate</option>
+                                    <option value="Advanced (Professional developer)">Advanced</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="compliance">Compliance Needs *</label>
+                                <select id="compliance" name="compliance" required>
+                                    <option value="">Select...</option>
+                                    <option value="None">None</option>
+                                    <option value="HIPAA (Healthcare)">HIPAA (Healthcare)</option>
+                                    <option value="PCI-DSS (Payment Processing)">PCI-DSS (Payments)</option>
+                                    <option value="GDPR (EU Data Privacy)">GDPR (EU)</option>
+                                    <option value="SOC 2 (Enterprise Security)">SOC 2</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="cloudPlatform">Cloud Platform Preference *</label>
+                            <select id="cloudPlatform" name="cloudPlatform" required>
+                                <option value="">Select...</option>
+                                <option value="No Preference">No Preference (Recommend for me)</option>
+                                <option value="Google Cloud (GCP)">Google Cloud (GCP)</option>
+                                <option value="Amazon Web Services (AWS)">Amazon Web Services (AWS)</option>
+                                <option value="Microsoft Azure">Microsoft Azure</option>
+                            </select>
+                        </div>
+
+                        <!-- AI Provider Selection -->
+                        <div class="form-group">
+                            <label>AI Provider Selection *</label>
+                            <p class="form-hint">Select one or more AI providers. Multiple providers enable quality comparison.</p>
+
+                            <div class="provider-options">
+                                <!-- Gemini -->
+                                <div class="provider-option">
+                                    <div class="provider-checkbox">
+                                        <input type="checkbox" id="useGemini" name="useGemini" checked>
+                                        <label for="useGemini">
+                                            <strong>Google Gemini</strong>
+                                        </label>
+                                    </div>
+                                    <select id="geminiModel" name="geminiModel" class="model-select">
+                                        <option value="gemini-2.0-flash-exp">Gemini 2.0 Flash (Recommended)</option>
+                                        <option value="gemini-1.5-pro">Gemini 1.5 Pro</option>
+                                        <option value="gemini-1.5-flash">Gemini 1.5 Flash</option>
+                                    </select>
+                                </div>
+
+                                <!-- Claude -->
+                                <div class="provider-option">
+                                    <div class="provider-checkbox">
+                                        <input type="checkbox" id="useClaude" name="useClaude" checked>
+                                        <label for="useClaude">
+                                            <strong>Anthropic Claude</strong>
+                                        </label>
+                                    </div>
+                                    <select id="claudeModel" name="claudeModel" class="model-select">
+                                        <option value="claude-sonnet-4-20250514">Claude Sonnet 4 (Recommended)</option>
+                                        <option value="claude-3-5-sonnet-20241022">Claude 3.5 Sonnet</option>
+                                        <option value="claude-3-opus-20240229">Claude 3 Opus</option>
+                                    </select>
+                                </div>
+
+                                <!-- OpenAI -->
+                                <div class="provider-option">
+                                    <div class="provider-checkbox">
+                                        <input type="checkbox" id="useOpenAI" name="useOpenAI" checked>
+                                        <label for="useOpenAI">
+                                            <strong>OpenAI GPT</strong>
+                                        </label>
+                                    </div>
+                                    <select id="openaiModel" name="openaiModel" class="model-select">
+                                        <option value="gpt-4-turbo-preview">GPT-4 Turbo (Recommended)</option>
+                                        <option value="gpt-4">GPT-4</option>
+                                        <option value="gpt-4o">GPT-4o</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn-primary btn-large">
+                            Start Building My Architecture →
+                        </button>
+                    </form>
+                </div>
             </section>
 
-            <!-- Results Section (Hidden Initially) -->
-            <section id="resultsSection" class="hidden">
-                <div class="results-header">
-                    <h2>Your Custom Architecture Blueprint</h2>
-                    <button id="startOverBtn" class="btn-secondary">Start Over</button>
-                </div>
-
-                <!-- Summary Card -->
-                <div class="card">
-                    <h3>📋 Executive Summary</h3>
-                    <p id="summaryText" class="summary-text"></p>
-                </div>
-
-                <!-- Compliance Alert (Conditional) -->
-                <div id="complianceAlert" class="card alert-card hidden">
-                    <h3>⚠️ Critical Compliance Requirements</h3>
-                    <p id="complianceText"></p>
-                </div>
-
-                <!-- System Diagram -->
-                <div class="card">
-                    <h3>🏗️ System Architecture Diagram</h3>
-                    <div class="diagram-container">
-                        <pre class="mermaid" id="mermaidDiagram">
-                        </pre>
-                    </div>
-                </div>
-
-                <!-- Tech Stack -->
-                <div class="card">
-                    <h3>🛠️ Recommended Tech Stack</h3>
-                    <div id="techStackContent" class="tech-stack-grid"></div>
-                </div>
-
-                <!-- Component Explanations -->
-                <div class="card">
-                    <h3>📚 Component Deep Dive</h3>
-                    <div id="componentExplanations" class="explanations-grid"></div>
-                </div>
-
-                <!-- Scalability Strategy -->
-                <div class="card">
-                    <h3>📈 Scalability Strategy</h3>
-                    <p id="scalabilityText"></p>
-                </div>
-
-                <!-- First Steps -->
-                <div class="card">
-                    <h3>🚀 Your First Steps (Getting Started)</h3>
-                    <ol id="firstStepsList" class="steps-list"></ol>
-                </div>
-
-                <!-- Cost & Risks -->
-                <div class="two-column">
-                    <div class="card">
-                        <h3>💰 Estimated Costs</h3>
-                        <p id="costText" class="cost-text"></p>
-                    </div>
-                    <div class="card">
-                        <h3>⚡ Risks & Gotchas</h3>
-                        <ul id="risksList" class="risks-list"></ul>
-                    </div>
-                </div>
+            <!-- Chat/Results Section (Initially hidden) -->
+            <section id="chatSection" class="section hidden">
+                <div id="chatContainer"></div>
             </section>
-
-            <!-- Loading State -->
-            <div id="loadingSection" class="hidden">
-                <div class="loading-spinner"></div>
-                <p class="loading-text">Archie is designing your architecture...</p>
-                <p class="loading-subtext">This may take 10-20 seconds</p>
-            </div>
-
-            <!-- Error State -->
-            <div id="errorSection" class="hidden card error-card">
-                <h3>❌ Oops! Something went wrong</h3>
-                <p id="errorText"></p>
-                <button id="retryBtn" class="btn-primary">Try Again</button>
-            </div>
         </main>
 
         <!-- Footer -->
@@ -261,6 +176,7 @@
         </footer>
     </div>
 
-    <script src="app.js"></script>
+    <!-- JavaScript Modules -->
+    <script type="module" src="/js/main.js"></script>
 </body>
 </html>
